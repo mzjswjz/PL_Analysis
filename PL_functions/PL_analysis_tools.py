@@ -30,7 +30,7 @@ class Steady_state_analysis:
         ax.set_title('Normalized PL spectra')
         ax.set_xlabel('Wavelength (nm)')
         ax.set_ylabel('Normalized Intensity')
-        plt.show()
+        plt.show(dpi = 500)
 
     def smooth_plot_PL(self):
         fig, ax = plt.subplots()
@@ -44,10 +44,10 @@ class Steady_state_analysis:
             smoothed_Intensity = pd.DataFrame(NormIntensity).rolling(20, center=True).mean().values.flatten()
             ax.plot(wavelength, smoothed_Intensity, label=molecule_name)
         ax.legend(fontsize=12)
-        ax.set_title('Normalized PL spectra')
+        ax.set_title('Smoothed Normalized PL spectra')
         ax.set_xlabel('Wavelength (nm)')
-        ax.set_ylabel('Normalized Intensity')
-        plt.show()
+        ax.set_ylabel('Intensity')
+        plt.show(dpi = 500)
 
 
 
