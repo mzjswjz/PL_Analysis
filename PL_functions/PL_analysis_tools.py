@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 
 class Steady_state_analysis:
@@ -52,7 +53,7 @@ class Steady_state_analysis:
         ax.set_ylabel('Normalized Intensity')
 
         # Show the plot
-        plt.show()
+        plt.show(dpi=500)
 
     # Method to plot the smoothed photoluminescence spectra for all molecules
     def smooth_plot_PL(self):
@@ -82,9 +83,12 @@ class Steady_state_analysis:
         ax.legend(fontsize=12)
 
         # Set the title, xlabel, and ylabel of the plot
-        ax.set_title('Normalized PL spectra')
+        ax.set_title('Smoothed normalized PL spectra')
         ax.set_xlabel('Wavelength (nm)')
         ax.set_ylabel('Normalized Intensity')
 
         # Show the plot
-        plt.show()
+        plt.show(dpi=500)
+
+
+
