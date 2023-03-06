@@ -17,11 +17,16 @@ def main():
         # Creating an instance of the Steady_state_analysis class
         PLA = PATools.Steady_state_analysis(bins_file_id)
 
+        # Plotting the unnormalized smoothed PL spectra
+        PLA.Unnormalized_smoothed_plot_PL()
+
         # Plotting the normalized PL spectra
         PLA.plot_PL()
 
         # Plotting the smoothed normalized PL spectra
         PLA.smooth_plot_PL()
+
+
 
     except Exception as e:
         # If any error occurs during the execution of the code, it will be printed

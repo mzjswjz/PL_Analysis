@@ -45,12 +45,46 @@ class Steady_state_analysis:
             ax.plot(wavelength, NormIntensity, label=molecule_name)
 
         # Add a legend to the plot with font size of 12
-        ax.legend(fontsize=12)
+        ax.legend(fontsize=8)
 
         # Set the title, xlabel, and ylabel of the plot
         ax.set_title('Normalized PL spectra')
         ax.set_xlabel('Wavelength (nm)')
         ax.set_ylabel('Normalized Intensity')
+
+        # Show the plot
+        plt.show(dpi=500)
+
+        # Method to plot the photoluminescence spectra for all molecules
+    def Unnormalized_smoothed_plot_PL(self):
+
+        # Create a figure and an axis object using matplotlib
+        fig, ax = plt.subplots()
+
+        # Iterate through all the molecules and their file IDs in the dictionary
+        for molecule_name, file_id in self.file_id.items():
+            # Load the PL data from the file using numpy
+            PLdata = np.loadtxt(file_id, skiprows=1)
+
+            # Extract the wavelength and intensity values from the PL data
+            wavelength = PLdata[:, 0]
+            Intensity = PLdata[:, 1]
+
+            # Smooth the intensity values using a rolling mean with a window size of 20
+            smoothed_Intensity = pd.DataFrame(Intensity).rolling(20, center=True).mean().values.flatten()
+
+
+
+            # Plot the normalized PL spectrum for the molecule with its name as the label
+            ax.plot(wavelength, smoothed_Intensity, label=molecule_name)
+
+        # Add a legend to the plot with font size of 12
+        ax.legend(fontsize=8)
+
+        # Set the title, xlabel, and ylabel of the plot
+        ax.set_title('UnNormalized smoothed PL spectra')
+        ax.set_xlabel('Wavelength (nm)')
+        ax.set_ylabel('Intensity')
 
         # Show the plot
         plt.show(dpi=500)
@@ -80,7 +114,7 @@ class Steady_state_analysis:
             ax.plot(wavelength, smoothed_Intensity, label=molecule_name)
 
         # Add a legend to the plot with font size of 12
-        ax.legend(fontsize=12)
+        ax.legend(fontsize=8)
 
         # Set the title, xlabel, and ylabel of the plot
         ax.set_title('Smoothed normalized PL spectra')
