@@ -15,13 +15,23 @@ def main():
 
     try:
         # Creating an instance of the Steady_state_analysis class
-        PLA = PATools.Steady_state_analysis(bins_file_id)
+        PLA = PATools.Photoluminescence(bins_file_id)
+
+        # Plotting the unnormalized PL spectra
+        PLA.unnorm_plot_PL()
+
+        # Plotting the unnormalized smoothed PL spectra
+        PLA.unnorm_smooth_plot_PL()
 
         # Plotting the normalized PL spectra
-        PLA.plot_PL()
+        PLA.norm_plot_PL()
 
         # Plotting the smoothed normalized PL spectra
-        PLA.smooth_plot_PL()
+        PLA.norm_smooth_plot_PL()
+
+        PLA.norm_AUC_plot_PL()
+
+
 
     except Exception as e:
         # If any error occurs during the execution of the code, it will be printed
