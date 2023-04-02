@@ -10,7 +10,7 @@ class Photoluminescence:
         self.bin_file_id = bin_file_id
 
         # Create an empty dictionary to store the PL data for all molecules
-        self.PLdata = {}
+        self.PLData = {}
 
         # Read the CSV file as a pandas DataFrame
         df = pd.read_csv(self.bin_file_id,
@@ -23,25 +23,25 @@ class Photoluminescence:
         # Iterate through all the molecules and their file IDs in the DataFrame
         for molecule_name, file_id in df.squeeze('columns').to_dict().items():
 
-            # Load the PL data from the file using numpy and store it in the PLdata dictionary
+            # Load the PL data from the file using numpy and store it in the PLData dictionary
             # Open the file
-            with open(file_id, 'r') as f:
+            #with open(file_id, 'r') as f:
                 # Skip non-numeric lines
-                for line in f:
-                    if line.strip().isdigit():
-                        break
+                #for line in f:
+                    #if line.strip().isdigit():
+                        #break
             # Load the data starting from the first numeric line
-                PLdata = np.loadtxt(f)
-            pl_intensity = np.trapz(PLdata[:, 1], PLdata[:, 0])
-            self.PLdata[molecule_name] = {
-                'wavelength': PLdata[:, 0],
-                'counts': PLdata[:, 1],
+            PLData = np.loadtxt(file_id, skiprows=1)
+            pl_intensity = np.trapz(PLData[:, 1], PLData[:, 0])
+            self.PLData[molecule_name] = {
+                'wavelength': PLData[:, 0],
+                'counts': PLData[:, 1],
                 'PL_intensity': pl_intensity
             }
     def calculate_PL_Quench(self, molecule1, molecule2):
         # Get the PL intensity of the molecule before and after treatment
-        intensity1 = self.PLdata[molecule1]['PL intensity']
-        intensity2 = self.PLdata[molecule2]['PL intensity']
+        intensity1 = self.PLData[molecule1]['PL_intensity']
+        intensity2 = self.PLData[molecule2]['PL_intensity']
 
         if intensity2 < intensity1:
             quenched_molecule = molecule2
@@ -59,8 +59,8 @@ class Photoluminescence:
         # Create a figure and an axis object using matplotlib
         fig, ax = plt.subplots()
 
-        # Iterate through all the molecules in the PLdata dictionary
-        for molecule_name, data in self.PLdata.items():
+        # Iterate through all the molecules in the PLData dictionary
+        for molecule_name, data in self.PLData.items():
 
             # Extract the wavelength and counts values from the PL data
             wavelength = data['wavelength']
@@ -75,7 +75,7 @@ class Photoluminescence:
         # Set the title, xlabel, and ylabel of the plot
         ax.set_title('Un-normalized PL spectra')
         ax.set_xlabel('Wavelength (nm)')
-        ax.set_ylabel('Normalized Counts')
+        ax.set_ylabel('Counts')
 
         # Show the plot
         plt.show(dpi=500)
@@ -87,14 +87,14 @@ class Photoluminescence:
         # Create a figure and an axis object using matplotlib
         fig, ax = plt.subplots()
 
-        # Iterate through all the molecules in the PLdata dictionary
-        for molecule_name, data in self.PLdata.items():
+        # Iterate through all the molecules in the PLData dictionary
+        for molecule_name, data in self.PLData.items():
             # Extract the wavelength and counts values from the PL data
             wavelength = data['wavelength']
             counts = data['counts']
 
             # Smooth the counts values using a rolling mean with a window size of 20
-            smoothed_Counts = pd.DataFrame(counts).rolling(20, center=True).mean().values.flatten()
+            smoothed_Counts = pd.DataFrame(counts).rolling(20, center=True, min_periods=1).mean().values.flatten()
 
 
 
@@ -109,8 +109,18 @@ class Photoluminescence:
         ax.set_xlabel('Wavelength (nm)')
         ax.set_ylabel('Counts')
 
+        # Get the path of the bins.csv file and create the output directory
+        bins_file_path = os.path.dirname(self.bin_file_id)
+        output_dir = os.path.join(bins_file_path, 'plots')
+        os.makedirs(output_dir, exist_ok=True)
+
+        # Save the plot with DPI = 500 in the output directory
+        output_path = os.path.join(output_dir, 'Un-normalized_smoothed_PL_plot.png')
+        plt.savefig(output_path, dpi=500)
+
         # Show the plot
-        plt.show(dpi=500)
+        plt.show()
+
 
     # Method to plot the smoothed photoluminescence spectra for all molecules
 
@@ -120,7 +130,7 @@ class Photoluminescence:
         fig, ax = plt.subplots()
 
         # Iterate through all the molecules and their file IDs in the dictionary
-        for molecule_name, data in self.PLdata.items():
+        for molecule_name, data in self.PLData.items():
             # Extract the wavelength and counts values from the PL data
             wavelength = data['wavelength']
             counts = data['counts']
@@ -150,7 +160,7 @@ class Photoluminescence:
         fig, ax = plt.subplots()
 
         # Iterate through all the molecules and their file IDs in the dictionary
-        for molecule_name, data in self.PLdata.items():
+        for molecule_name, data in self.PLData.items():
 
             # Extract the wavelength and counts values from the PL data
             wavelength = data['wavelength']
@@ -160,7 +170,7 @@ class Photoluminescence:
             NormCounts = counts / max(counts)
 
             # Smooth the counts values using a rolling mean with a window size of 20
-            smoothed_Counts = pd.DataFrame(NormCounts).rolling(20, center=True).mean().values.flatten()
+            smoothed_Counts = pd.DataFrame(NormCounts).rolling(20, center=True, min_periods=1).mean().values.flatten()
 
             # Plot the smoothed PL spectrum for the molecule with its name as the label
             ax.plot(wavelength, smoothed_Counts, label=molecule_name)
@@ -176,12 +186,45 @@ class Photoluminescence:
         # Show the plot
         plt.show(dpi=500)
 
+    def smooth_norm_plot_PL(self):
+
+        # Create a figure and an axis object using matplotlib
+        fig, ax = plt.subplots()
+
+        # Iterate through all the molecules and their file IDs in the dictionary
+        for molecule_name, data in self.PLData.items():
+
+            # Extract the wavelength and counts values from the PL data
+            wavelength = data['wavelength']
+            counts = data['counts']
+
+            # Smooth the counts values using a rolling mean with a window size of 20
+            smoothed_Counts = pd.DataFrame(counts).rolling(20, center=True, min_periods=1).mean().values.flatten()
+
+
+            # Normalize the counts values by dividing them by the maximum counts
+            Norm_smooth_Counts = smoothed_Counts / max(smoothed_Counts)
+
+            # Plot the smoothed PL spectrum for the molecule with its name as the label
+            ax.plot(wavelength, Norm_smooth_Counts, label=molecule_name)
+
+        # Add a legend to the plot with font size of 8
+        ax.legend(fontsize=8)
+
+        # Set the title, xlabel, and ylabel of the plot
+        ax.set_title('Normalized smoothed PL spectra')
+        ax.set_xlabel('Wavelength (nm)')
+        ax.set_ylabel('Normalized Counts')
+
+        # Show the plot
+        plt.show(dpi=500)
+
     def norm_AUC_plot_PL(self):
         # Create a figure and an axis object using matplotlib
         fig, ax = plt.subplots()
 
         # Iterate through all the molecules and their file IDs in the dictionary
-        for molecule_name, data in self.PLdata.items():
+        for molecule_name, data in self.PLData.items():
             # Extract the wavelength and counts values from the PL data
             wavelength = data['wavelength']
             counts = data['counts']
@@ -194,7 +237,7 @@ class Photoluminescence:
                 normCounts = counts / x_auc
 
                 # Smooth the counts values using a rolling mean with a window size of 20
-            smoothedCounts = pd.DataFrame(normCounts).rolling(20, center=True).mean().values.flatten()
+            smoothedCounts = pd.DataFrame(normCounts).rolling(20, center=True, min_periods=1).mean().values.flatten()
 
                 # Plot the smoothed PL spectrum for the molecule with its name as the label
 

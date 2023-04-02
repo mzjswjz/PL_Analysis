@@ -24,12 +24,18 @@ def main():
         PLA.unnorm_smooth_plot_PL()
 
         # Plotting the normalized PL spectra
-        PLA.norm_plot_PL()
+        #PLA.norm_plot_PL()
 
         # Plotting the smoothed normalized PL spectra
-        PLA.norm_smooth_plot_PL()
+        #PLA.norm_smooth_plot_PL()
 
-        PLA.norm_AUC_plot_PL()
+        # Plotting the smoothed normalized PL spectra
+        #PLA.smooth_norm_plot_PL()
+
+        # Plotting the smoothed AUC normalized PL spectra
+        #PLA.norm_AUC_plot_PL()
+
+        PLA.calculate_PL_Quench('CBP|DCV3T|Quartz','SubNc|CBP|DCV3T|Quartz')
 
 
 
