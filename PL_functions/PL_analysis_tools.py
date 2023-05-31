@@ -22,15 +22,6 @@ class Photoluminescence:
 
         # Iterate through all the molecules and their file IDs in the DataFrame
         for molecule_name, file_id in df.squeeze('columns').to_dict().items():
-
-            # Load the PL data from the file using numpy and store it in the PLData dictionary
-            # Open the file
-            #with open(file_id, 'r') as f:
-                # Skip non-numeric lines
-                #for line in f:
-                    #if line.strip().isdigit():
-                        #break
-            # Load the data starting from the first numeric line
             PLData = np.loadtxt(file_id, skiprows=1)
             pl_intensity = np.trapz(PLData[:, 1], PLData[:, 0])
             self.PLData[molecule_name] = {
@@ -54,7 +45,7 @@ class Photoluminescence:
 
         print(f'{quenched_molecule} is quenched compared to {unquenched_molecule} by {quenching_ratio * 100:.2f}%')
 
-    def unnorm_plot_PL(self):
+    def unnorm_plot_PL(self, savefig=False):
 
         # Create a figure and an axis object using matplotlib
         fig, ax = plt.subplots()
@@ -65,24 +56,42 @@ class Photoluminescence:
             # Extract the wavelength and counts values from the PL data
             wavelength = data['wavelength']
             counts = data['counts']
+            #counts = counts - np.min(counts)
 
             # Plot the normalized PL spectrum for the molecule with its name as the label
             ax.plot(wavelength, counts, label=molecule_name)
 
         # Add a legend to the plot with font size of 12
-        ax.legend(fontsize=8)
+        ax.legend(fontsize=9, frameon=False, loc='upper right')
+        # Add horizontal line at y=0
+        #ax.axhline(0, color='black', linestyle='-', linewidth=1)
 
         # Set the title, xlabel, and ylabel of the plot
         ax.set_title('Un-normalized PL spectra')
         ax.set_xlabel('Wavelength (nm)')
         ax.set_ylabel('Counts')
 
+        ax.tick_params(labelsize=10, direction='in', axis='both', which='major', length=8, width=0.5)
+        ax.tick_params(labelsize=10, direction='in', axis='both', which='minor', length=4, width=0.5)
+        ax.minorticks_on()
+
+
+        if savefig != False:
+            # Get the path of the bins.csv file and create the output directory
+            bins_file_path = os.path.dirname(self.bin_file_id)
+            output_dir = os.path.join(bins_file_path, 'plots')
+            os.makedirs(output_dir, exist_ok=True)
+
+            # Save the plot with DPI = 200 in the output directory
+            output_path = os.path.join(output_dir, 'Un-normalized_PL_plot.png')
+            plt.savefig(output_path, dpi=200)
+
         # Show the plot
-        plt.show(dpi=500)
+        plt.show()
 
 
         # Method to plot the photoluminescence spectra for all molecules
-    def unnorm_smooth_plot_PL(self):
+    def unnorm_smooth_plot_PL(self, smooth_level=20, savefig=False):
 
         # Create a figure and an axis object using matplotlib
         fig, ax = plt.subplots()
@@ -92,9 +101,10 @@ class Photoluminescence:
             # Extract the wavelength and counts values from the PL data
             wavelength = data['wavelength']
             counts = data['counts']
+            #counts = counts - np.min(counts)
 
             # Smooth the counts values using a rolling mean with a window size of 20
-            smoothed_Counts = pd.DataFrame(counts).rolling(20, center=True, min_periods=1).mean().values.flatten()
+            smoothed_Counts = pd.DataFrame(counts).rolling(smooth_level, center=True, min_periods=1).mean().values.flatten()
 
 
 
@@ -102,21 +112,28 @@ class Photoluminescence:
             ax.plot(wavelength, smoothed_Counts, label=molecule_name)
 
         # Add a legend to the plot with font size of 8
-        ax.legend(fontsize=8)
+        ax.legend(fontsize=9, frameon=False, loc='upper right')
+        # Add horizontal line at y=0
+        #ax.axhline(0, color='black', linestyle='-', linewidth=1)
 
         # Set the title, xlabel, and ylabel of the plot
         ax.set_title('Un-normalized smoothed PL spectra')
         ax.set_xlabel('Wavelength (nm)')
         ax.set_ylabel('Counts')
 
-        # Get the path of the bins.csv file and create the output directory
-        bins_file_path = os.path.dirname(self.bin_file_id)
-        output_dir = os.path.join(bins_file_path, 'plots')
-        os.makedirs(output_dir, exist_ok=True)
+        ax.tick_params(labelsize=10, direction='in', axis='both', which='major', length=8, width=0.5)
+        ax.tick_params(labelsize=10, direction='in', axis='both', which='minor', length=4, width=0.5)
+        ax.minorticks_on()
 
-        # Save the plot with DPI = 500 in the output directory
-        output_path = os.path.join(output_dir, 'Un-normalized_smoothed_PL_plot.png')
-        plt.savefig(output_path, dpi=500)
+        if savefig != False:
+            # Get the path of the bins.csv file and create the output directory
+            bins_file_path = os.path.dirname(self.bin_file_id)
+            output_dir = os.path.join(bins_file_path, 'plots')
+            os.makedirs(output_dir, exist_ok=True)
+
+            # Save the plot with DPI = 200 in the output directory
+            output_path = os.path.join(output_dir, 'Un-normalized_smoothed_PL_plot.png')
+            plt.savefig(output_path, dpi=200)
 
         # Show the plot
         plt.show()
@@ -124,7 +141,7 @@ class Photoluminescence:
 
     # Method to plot the smoothed photoluminescence spectra for all molecules
 
-    def norm_plot_PL(self):
+    def norm_plot_PL(self, savefig=False):
 
         # Create a figure and an axis object using matplotlib
         fig, ax = plt.subplots()
@@ -143,18 +160,32 @@ class Photoluminescence:
 
         # Add a legend to the plot with font size of 8
         ax.legend(fontsize=8)
+        # Add horizontal line at y=0
+        #ax.axhline(0, color='black', linestyle='-', linewidth=1)
 
         # Set the title, xlabel, and ylabel of the plot
         ax.set_title('Normalized PL spectra')
         ax.set_xlabel('Wavelength (nm)')
         ax.set_ylabel('Normalized Counts')
 
+        if savefig != False:
+            # Get the path of the bins.csv file and create the output directory
+            bins_file_path = os.path.dirname(self.bin_file_id)
+            output_dir = os.path.join(bins_file_path, 'plots')
+            os.makedirs(output_dir, exist_ok=True)
+
+            # Save the plot with DPI = 200 in the output directory
+            output_path = os.path.join(output_dir, 'Normalized_Un-smoothed_PL_plot.png')
+            plt.savefig(output_path, dpi=200)
+
         # Show the plot
-        plt.show(dpi=500)
+        plt.show()
 
 
 
-    def norm_smooth_plot_PL(self):
+
+
+    def norm_smooth_plot_PL(self, smooth_level=20, savefig=False):
 
         # Create a figure and an axis object using matplotlib
         fig, ax = plt.subplots()
@@ -170,23 +201,35 @@ class Photoluminescence:
             NormCounts = counts / max(counts)
 
             # Smooth the counts values using a rolling mean with a window size of 20
-            smoothed_Counts = pd.DataFrame(NormCounts).rolling(20, center=True, min_periods=1).mean().values.flatten()
+            smoothed_Counts = pd.DataFrame(NormCounts).rolling(smooth_level, center=True, min_periods=1).mean().values.flatten()
 
             # Plot the smoothed PL spectrum for the molecule with its name as the label
             ax.plot(wavelength, smoothed_Counts, label=molecule_name)
 
         # Add a legend to the plot with font size of 8
         ax.legend(fontsize=8)
+        # Add horizontal line at y=0
+        #ax.axhline(0, color='black', linestyle='-', linewidth=1)
 
         # Set the title, xlabel, and ylabel of the plot
         ax.set_title('Smoothed normalized PL spectra')
         ax.set_xlabel('Wavelength (nm)')
         ax.set_ylabel('Normalized Counts')
 
-        # Show the plot
-        plt.show(dpi=500)
+        if savefig != False:
+            # Get the path of the bins.csv file and create the output directory
+            bins_file_path = os.path.dirname(self.bin_file_id)
+            output_dir = os.path.join(bins_file_path, 'plots')
+            os.makedirs(output_dir, exist_ok=True)
 
-    def smooth_norm_plot_PL(self):
+            # Save the plot with DPI = 200 in the output directory
+            output_path = os.path.join(output_dir, 'Smoothed_normalized_PL_plot.png')
+            plt.savefig(output_path, dpi=200)
+
+        # Show the plot
+        plt.show()
+
+    def smooth_norm_plot_PL(self, smooth_level=20, savefig=False):
 
         # Create a figure and an axis object using matplotlib
         fig, ax = plt.subplots()
@@ -199,7 +242,7 @@ class Photoluminescence:
             counts = data['counts']
 
             # Smooth the counts values using a rolling mean with a window size of 20
-            smoothed_Counts = pd.DataFrame(counts).rolling(20, center=True, min_periods=1).mean().values.flatten()
+            smoothed_Counts = pd.DataFrame(counts).rolling(smooth_level, center=True, min_periods=1).mean().values.flatten()
 
 
             # Normalize the counts values by dividing them by the maximum counts
@@ -210,16 +253,28 @@ class Photoluminescence:
 
         # Add a legend to the plot with font size of 8
         ax.legend(fontsize=8)
+        # Add horizontal line at y=0
+        #ax.axhline(0, color='black', linestyle='-', linewidth=1)
 
         # Set the title, xlabel, and ylabel of the plot
         ax.set_title('Normalized smoothed PL spectra')
         ax.set_xlabel('Wavelength (nm)')
         ax.set_ylabel('Normalized Counts')
 
-        # Show the plot
-        plt.show(dpi=500)
+        if savefig != False:
+            # Get the path of the bins.csv file and create the output directory
+            bins_file_path = os.path.dirname(self.bin_file_id)
+            output_dir = os.path.join(bins_file_path, 'plots')
+            os.makedirs(output_dir, exist_ok=True)
 
-    def norm_AUC_plot_PL(self):
+            # Save the plot with DPI = 200 in the output directory
+            output_path = os.path.join(output_dir, 'Normalized_smoothed_PL_plot.png')
+            plt.savefig(output_path, dpi=200)
+
+        # Show the plot
+        plt.show()
+
+    def norm_AUC_plot_PL(self, smooth_level=20, savefig=False):
         # Create a figure and an axis object using matplotlib
         fig, ax = plt.subplots()
 
@@ -237,7 +292,7 @@ class Photoluminescence:
                 normCounts = counts / x_auc
 
                 # Smooth the counts values using a rolling mean with a window size of 20
-            smoothedCounts = pd.DataFrame(normCounts).rolling(20, center=True, min_periods=1).mean().values.flatten()
+            smoothedCounts = pd.DataFrame(normCounts).rolling(smooth_level, center=True, min_periods=1).mean().values.flatten()
 
                 # Plot the smoothed PL spectrum for the molecule with its name as the label
 
@@ -246,20 +301,24 @@ class Photoluminescence:
 
         # Add a legend to the plot with font size of 8
         ax.legend(fontsize=8)
+        # Add horizontal line at y=0
+        #ax.axhline(0, color='black', linestyle='-', linewidth=1)
 
         # Set the title, xlabel, and ylabel of the plot
         ax.set_title('Normalized (AUC) PL spectra')
         ax.set_xlabel('Wavelength (nm)')
         ax.set_ylabel('Normalized Counts')
 
-        # Get the path of the bins.csv file and create the output directory
-        bins_file_path = os.path.dirname(self.bin_file_id)
-        output_dir = os.path.join(bins_file_path, 'plots')
-        os.makedirs(output_dir, exist_ok=True)
+        if savefig != False:
 
-        # Save the plot with DPI = 500 in the output directory
-        output_path = os.path.join(output_dir, 'normalized_AUC_smoothed_PL_plot.png')
-        plt.savefig(output_path, dpi=500)
+            # Get the path of the bins.csv file and create the output directory
+            bins_file_path = os.path.dirname(self.bin_file_id)
+            output_dir = os.path.join(bins_file_path, 'plots')
+            os.makedirs(output_dir, exist_ok=True)
+
+            # Save the plot with DPI = 500 in the output directory
+            output_path = os.path.join(output_dir, 'normalized_AUC_smoothed_PL_plot.png')
+            plt.savefig(output_path, dpi=200)
 
         # Show the plot
         plt.show()
