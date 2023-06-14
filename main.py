@@ -35,7 +35,7 @@ def main():
         # Plotting the smoothed AUC normalized PL spectra
         #PLA.norm_AUC_plot_PL(smooth_level=15, savefig=True)
 
-        #PLA.calculate_PL_Quench('Glass|HB194|CBP','Glass|HB194|CBP|SubNc')
+        PLA.calculate_PL_Quench('Glass|SubNc|HB194', 'Glass|HB194')
 
 
 
