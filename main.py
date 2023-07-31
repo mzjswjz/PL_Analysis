@@ -18,24 +18,24 @@ def main():
         PLA = PATools.Photoluminescence(bins_file_id)
 
         # Plotting the unnormalized PL spectra
-        PLA.unnorm_plot_PL(savefig=True)
+        #PLA.unnorm_plot_PL(savefig=True)
 
         # Plotting the unnormalized smoothed PL spectra
-        PLA.unnorm_smooth_plot_PL(smooth_level=20, savefig=True)
+        #PLA.unnorm_smooth_plot_PL(smooth_level=23, savefig=True)
 
         # Plotting the normalized PL spectra
-        #PLA.norm_plot_PL()
+        PLA.norm_plot_PL(savefig=True)
 
         # Plotting the normalized then smoothed PL spectra
         #PLA.norm_smooth_plot_PL()
 
         # Plotting the smoothed normalized PL spectra
-        #PLA.smooth_norm_plot_PL()
+        PLA.smooth_norm_plot_PL(smooth_level=25, savefig=True)
 
         # Plotting the smoothed AUC normalized PL spectra
         #PLA.norm_AUC_plot_PL(smooth_level=15, savefig=True)
 
-        PLA.calculate_PL_Quench('Glass|SubNc|HB194', 'Glass|HB194')
+        #PLA.calculate_PL_Quench('DTDCPB:C60 110C', 'DTDCPB 110C')
 
 
 

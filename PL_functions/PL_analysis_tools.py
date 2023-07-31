@@ -62,7 +62,7 @@ class Photoluminescence:
             ax.plot(wavelength, counts, label=molecule_name)
 
         # Add a legend to the plot with font size of 12
-        ax.legend(fontsize=9, frameon=False, loc='upper right')
+        ax.legend(fontsize=9, frameon=False, loc='best')
         # Add horizontal line at y=0
         #ax.axhline(0, color='black', linestyle='-', linewidth=1)
 
@@ -112,7 +112,7 @@ class Photoluminescence:
             ax.plot(wavelength, smoothed_Counts, label=molecule_name)
 
         # Add a legend to the plot with font size of 8
-        ax.legend(fontsize=9, frameon=False, loc='upper right')
+        ax.legend(fontsize=9, frameon=False, loc='best')
         # Add horizontal line at y=0
         #ax.axhline(0, color='black', linestyle='-', linewidth=1)
 
