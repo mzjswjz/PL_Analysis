@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import auc
+from scipy.signal import find_peaks
 import os
 
 
@@ -29,6 +30,14 @@ class Photoluminescence:
                 'counts': PLData[:, 1],
                 'PL_intensity': pl_intensity
             }
+
+    def convert_to_eV(self, wavelength):
+        h = 4.1357 * 10 ** (-15) #Planck constant eV
+        c = 299792458 # speed of light in m/s
+
+        energy = (h * c) / (wavelength * 10 ** (-9))
+        return energy
+
     def calculate_PL_Quench(self, molecule1, molecule2):
         # Get the PL intensity of the molecule before and after treatment
         intensity1 = self.PLData[molecule1]['PL_intensity']
