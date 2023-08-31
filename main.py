@@ -18,22 +18,22 @@ def main():
         PLA = PATools.Photoluminescence(bins_file_id)
 
         # Plotting the unnormalized PL spectra
-        #PLA.unnorm_plot_PL(savefig=True)
+        #PLA.plot_unnorm_PL(plot_energy=True, plot_peaks=True, savefig=False)
 
         # Plotting the unnormalized smoothed PL spectra
-        #PLA.unnorm_smooth_plot_PL(smooth_level=23, savefig=True)
+        #PLA.plot_unnorm_smooth_PL(smooth_level=20, plot_energy=True, plot_peaks=True, savefig=False)
 
         # Plotting the normalized PL spectra
-        PLA.norm_plot_PL(savefig=True)
+        #PLA.plot_norm_PL(plot_energy=True, plot_peaks=True, savefig=False)
+
+        # Plotting smoothed then normalized PL spectra
+        PLA.plot_smooth_norm_PL(smooth_level=25, plot_energy=False, plot_peaks=True, savefig=False)
 
         # Plotting the normalized then smoothed PL spectra
-        #PLA.norm_smooth_plot_PL()
+        #PLA.plot_norm_smooth_PL(smooth_level=20, plot_energy=True, plot_peaks=True, savefig=False)
 
-        # Plotting the smoothed normalized PL spectra
-        PLA.smooth_norm_plot_PL(smooth_level=25, savefig=True)
-
-        # Plotting the smoothed AUC normalized PL spectra
-        #PLA.norm_AUC_plot_PL(smooth_level=15, savefig=True)
+        # Plotting the AUC normalized then smoothed PL spectra
+        #PLA.plot_norm_AUC_PL(smooth_level=20, plot_energy=True, plot_peaks=True, savefig=False)
 
         #PLA.calculate_PL_Quench('DTDCPB:C60 110C', 'DTDCPB 110C')
 
