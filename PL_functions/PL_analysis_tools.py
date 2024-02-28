@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import datetime
 import matplotlib.pyplot as plt
 from sklearn.metrics import auc
 from scipy.signal import find_peaks
@@ -78,7 +79,12 @@ class Photoluminescence:
             output_dir = os.path.join(bins_file_path, 'plots')
             os.makedirs(output_dir, exist_ok=True)
 
-            output_path = os.path.join(output_dir, f'{title.replace(" ", "_")}.png')
+            # Get current timestamp
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+            # Create a unique filename with timestamp
+            filename = f"{title.replace(' ', '_')}_{timestamp}.png"
+            output_path = os.path.join(output_dir,filename)
             plt.savefig(output_path, dpi=200)
 
         plt.show()

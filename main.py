@@ -27,7 +27,7 @@ def main():
         #PLA.plot_norm_PL(plot_energy=True, plot_peaks=True, savefig=False)
 
         # Plotting smoothed then normalized PL spectra
-        PLA.plot_smooth_norm_PL(smooth_level=25, plot_energy=False, plot_peaks=True, savefig=False)
+        PLA.plot_smooth_norm_PL(smooth_level=25, plot_energy=False, plot_peaks=True, savefig=True)
 
         # Plotting the normalized then smoothed PL spectra
         #PLA.plot_norm_smooth_PL(smooth_level=20, plot_energy=True, plot_peaks=True, savefig=False)
